@@ -26,8 +26,7 @@
         .popup-container img {
             max-width: 80%;
             max-height: 80%;
-            margin-top: 10vh;
-            margin-bottom: 10vh;
+            margin: 10% auto;
             border: 2px solid white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
@@ -44,8 +43,7 @@
 <body>
     <h1>Lista de Miniaturas</h1>
 
-    <!-- Barra de busca -->
-    <input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
+    <a href="dashboard.html">Dashboard</a>
 
     <!-- Tabela para exibir os dados -->
     <table id="tabela-dados" class="tabela-dados">
@@ -81,6 +79,8 @@
         <img id="popupImage" class="popup-image">
     </div>
 
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
     <script>
         // Carregar os dados do arquivo JSON
         fetch('base_dados.json')
@@ -88,6 +88,7 @@
             .then(data => {
                 exibirDados(data);
                 adicionarEventos();
+                iniciarDataTable();
             })
             .catch(error => console.error(error));
 
@@ -95,6 +96,9 @@
         function exibirDados(dados) {
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
+
+            // Limpar o conteúdo da tabela
+            tbody.innerHTML = '';
 
             // Iterar sobre os dados e criar as linhas da tabela
             dados.forEach(dado => {
@@ -163,6 +167,15 @@
                 popupContainer.style.display = 'none';
             }
         });
+
+        // Iniciar o DataTable
+        function iniciarDataTable() {
+            $('#tabela-dados').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/Portuguese-Brasil.json'
+                }
+            });
+        }
     </script>
 </body>
 </html>

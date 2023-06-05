@@ -7,9 +7,9 @@
             display: flex;
             justify-content: space-around;
         }
-        .chart-container {
-            width: 400px;
-            height: 400px;
+        canvas {
+            width: 400px !important;
+            height: 400px !important;
         }
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -20,12 +20,12 @@
     <h2>Total de Miniaturas: <span id="total"></span></h2>
 
     <div id="charts">
-        <div class="chart-container">
+        <div>
             <h2>Distribuição de Cores</h2>
             <canvas id="chartPizza"></canvas>
         </div>
 
-        <div class="chart-container">
+        <div>
             <h2>Quantidade por Ano de Lançamento</h2>
             <input id="filtroAno" type="number" placeholder="Filtrar por ano">
             <canvas id="chartBarra"></canvas>
@@ -67,8 +67,7 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+                    responsive: false
                 }
             });
 
@@ -84,8 +83,7 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+                    responsive: false
                 }
             });
 
@@ -98,6 +96,3 @@
                 chartBarra.update();
             });
         });
-    </script>
-</body>
-</html>

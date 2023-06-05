@@ -2,6 +2,16 @@
 <html>
 <head>
     <title>Dashboard de Miniaturas</title>
+    <style>
+        #charts {
+            display: flex;
+            justify-content: space-around;
+        }
+        canvas {
+            width: 400px;
+            height: 400px;
+        }
+    </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -9,13 +19,22 @@
     <h1>Dashboard de Miniaturas</h1>
     <h2>Total de Miniaturas: <span id="total"></span></h2>
 
-    <h2>Distribuição de Cores</h2>
-    <canvas id="chartPizza"></canvas>
+    <div id="charts">
+        <div>
+            <h2>Distribuição de Cores</h2>
+            <canvas id="chartPizza"></canvas>
+        </div>
 
-    <h2>Quantidade por Ano de Lançamento</h2>
-    <canvas id="chartBarra"></canvas>
+        <div>
+            <h2>Quantidade por Ano de Lançamento</h2>
+            <input id="filtroAno" type="number" placeholder="Filtrar por ano">
+            <canvas id="chartBarra"></canvas>
+        </div>
+    </div>
 
     <script>
+        var chartBarra;
+
         d3.json("base_dados.json").then(function(data) {
             var totalMiniaturas = data.length;
             document.getElementById('total').textContent = totalMiniaturas;
@@ -48,12 +67,13 @@
                     }]
                 },
                 options: {
-                    responsive: true
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
             });
 
             var ctxBarra = document.getElementById('chartBarra').getContext('2d');
-            var chartBarra = new Chart(ctxBarra, {
+            chartBarra = new Chart(ctxBarra, {
                 type: 'bar',
                 data: {
                     labels: Object.keys(lancamentos),
@@ -64,10 +84,20 @@
                     }]
                 },
                 options: {
-                    responsive: true
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
+            });
+
+            document.getElementById('filtroAno').addEventListener('change', function(e) {
+                var anoFiltrado = e.target.value;
+                var lancamentosFiltrados = lancamentos[anoFiltrado] || 0;
+
+                chartBarra.data.labels = [anoFiltrado];
+                chartBarra.data.datasets[0].data = [lancamentosFiltrados];
+                chartBarra.update();
             });
         });
     </script>
 </body>
-</html>
+</html

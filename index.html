@@ -10,10 +10,17 @@
             width: 100px;
             height: auto;
         }
+
+        .search-bar {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Lista de Miniaturas</h1>
+
+    <!-- Barra de busca -->
+    <input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
 
     <!-- Tabela para exibir os dados -->
     <table id="tabela-dados">
@@ -48,7 +55,10 @@
         // Carregar os dados do arquivo JSON
         fetch('base_dados.json')
             .then(response => response.json())
-            .then(data => exibirDados(data))
+            .then(data => {
+                exibirDados(data);
+                adicionarEventos();
+            })
             .catch(error => console.error(error));
 
         // Função para exibir os dados na tabela
@@ -65,10 +75,13 @@
                     const celula = document.createElement('td');
 
                     if (prop === 'Hiperlink Imagem') {
-                        // Criar um elemento de imagem (thumbnail)
+                        // Criar um elemento de imagem (thumbnail) clicável
                         const imagem = document.createElement('img');
                         imagem.classList.add('thumbnail');
                         imagem.src = dado[prop];
+                        imagem.addEventListener('click', () => {
+                            window.open(dado[prop]);
+                        });
                         celula.appendChild(imagem);
                     } else {
                         celula.textContent = dado[prop];
@@ -81,6 +94,17 @@
                 tbody.appendChild(linha);
             });
         }
-    </script>
-</body>
-</html>
+
+        // Função para adicionar eventos aos elementos da tabela
+        function adicionarEventos() {
+            const searchInput = document.getElementById('searchInput');
+            const tabela = document.getElementById('tabela-dados');
+            const tbody = tabela.querySelector('tbody');
+            const linhas = Array.from(tbody.getElementsByTagName('tr'));
+
+            // Evento de busca
+            searchInput.addEventListener('input', () => {
+                const termoBusca = searchInput.value.toLowerCase();
+
+                linhas.forEach(linha => {
+                    const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map

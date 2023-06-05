@@ -5,225 +5,187 @@
     <title>Lista de Miniaturas</title>
     <style>
         /* Estilos CSS */
+    .thumbnail {
+        width: 100px;
+        height: auto;
+    }
 
-        .thumbnail {
-            width: 100px;
-            height: auto;
-        }
+    .search-bar {
+        margin-bottom: 10px;
+    }
 
-        .search-bar {
-            margin-bottom: 10px;
-        }
+    .table-row-even {
+        background-color: #f2f2f2;
+    }
 
-        .table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    .table-row-odd {
+        background-color: #ffffff;
+    }
 
-        .table th, .table td {
-            border: 1px solid #000;
-            padding: 8px;
-        }
+    .table-row-header {
+        background-color: #c1e2b3;
+    }
 
-        .table th {
-            background-color: lightgreen;
-        }
-
-        .table-row-even {
-            background-color: #f2f2f2;
-        }
-
-        .table-row-odd {
-            background-color: #fff;
-        }
-
-        .table-row-divider td {
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            background-color: lightgray;
-            padding: 0;
-        }
-
-        .table-row-divider td:first-child {
-            border-left: 1px solid #000;
-        }
-
-        .table-row-divider td:last-child {
-            border-right: 1px solid #000;
-        }
-
-        .popup-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .popup-container img {
-            max-width: 90%;
-            max-height: 90%;
-        }
-    </style>
+    .table-row-header input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+</style>
 </head>
 <body>
     <h1>Lista de Miniaturas</h1>
+<!-- Barra de busca -->
+<input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
 
-    <!-- Link para a página Dashboard -->
-    <a href="dashboard.html">Dashboard</a>
+<!-- Tabela para exibir os dados -->
+<table id="tabela-dados" class="table">
+    <thead>
+        <tr class="table-row-header">
+            <th>Model Name <input type="text" class="search-bar" placeholder="Filtrar por Model Name"></th>
+            <th>Release Year <input type="text" class="search-bar" placeholder="Filtrar por Release Year"></th>
+            <th>Series <input type="text" class="search-bar" placeholder="Filtrar por Series"></th>
+            <th>Color <input type="text" class="search-bar" placeholder="Filtrar por Color"></th>
+            <th>Tampo <input type="text" class="search-bar" placeholder="Filtrar por Tampo"></th>
+            <th>Wheel Type <input type="text" class="search-bar" placeholder="Filtrar por Wheel Type"></th>
+            <th>Base Type <input type="text" class="search-bar" placeholder="Filtrar por Base Type"></th>
+            <th>Base Color <input type="text" class="search-bar" placeholder="Filtrar por Base Color"></th>
+            <th>Window Color <input type="text" class="search-bar" placeholder="Filtrar por Window Color"></th>
+            <th>Interior Color <input type="text" class="search-bar" placeholder="Filtrar por Interior Color"></th>
+            <th>Toy # <input type="text" class="search-bar" placeholder="Filtrar por Toy #"></th>
+            <th>Scale <input type="text" class="search-bar" placeholder="Filtrar por Scale"></th>
+            <th>Country <input type="text" class="search-bar" placeholder="Filtrar por Country"></th>
+            <th>Notes <input type="text" class="search-bar" placeholder="Filtrar por Notes"></th>
+            <th>Base Codes <input type="text" class="search-bar" placeholder="Filtrar por Base Codes"></th>
+            <th>Case Number <input type="text" class="search-bar" placeholder="Filtrar por Case Number"></th>
+            <th>Mainline <input type="text" class="search-bar" placeholder="Filtrar por Mainline"></th>
+            <th>Hiperlink Imagem</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Linhas de dados -->
+    </tbody>
+</table>
 
-    <!-- Filtros -->
-    <input type="text" class="search-bar" placeholder="Filtrar por Model Name">
-    <input type="text" class="search-bar" placeholder="Filtrar por Release Year">
-    <input type="text" class="search-bar" placeholder="Filtrar por Series">
-    <input type="text" class="search-bar" placeholder="Filtrar por Color">
-    <input type="text" class="search-bar" placeholder="Filtrar por Tampo">
-    <input type="text" class="search-bar" placeholder="Filtrar por Wheel Type">
-    <input type="text" class="search-bar" placeholder="Filtrar por Base Type">
-    <input type="text" class="search-bar" placeholder="Filtrar por Base Color">
-    <input type="text" class="search-bar" placeholder="Filtrar por Window Color">
-    <input type="text" class="search-bar" placeholder="Filtrar por Interior Color">
-    <input type="text" class="search-bar" placeholder="Filtrar por Toy #">
-    <input type="text" class="search-bar" placeholder="Filtrar por Scale">
-    <input type="text" class="search-bar" placeholder="Filtrar por Country">
-    <input type="text" class="search-bar" placeholder="Filtrar por Notes">
-    <input type="text" class="search-bar" placeholder="Filtrar por Base Codes">
-    <input type="text" class="search-bar" placeholder="Filtrar por Case Number">
-    <input type="text" class="search-bar" placeholder="Filtrar por Mainline">
+<!-- Container para a imagem em popup -->
+<div id="popupContainer" class="popup-container">
+    <img id="popupImage" class="popup-image" src="" alt="Imagem em popup">
+</div>
 
-    <!-- Tabela para exibir os dados -->
-    <table id="tabela-dados" class="table">
-        <thead>
-            <tr>
-                <th>Model Name</th>
-                <th>Release Year</th>
-                <th>Series</th>
-                <th>Color</th>
-                <th>Tampo</th>
-                <th>Wheel Type</th>
-                <th>Base Type</th>
-                <th>Base Color</th>
-                <th>Window Color</th>
-                <th>Interior Color</th>
-                <th>Toy #</th>
-                <th>Scale</th>
-                <th>Country</th>
-                <th>Notes</th>
-                <th>Base Codes</th>
-                <th>Case Number</th>
-                <th>Mainline</th>
-                <th>Hiperlink Imagem</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Linhas de dados -->
-        </tbody>
-    </table>
+<script>
+    // Carregar os dados do arquivo JSON
+    fetch('base_dados.json')
+        .then(response => response.json())
+        .then(data => {
+            exibirDados(data);
+            adicionarEventos();
+        })
+        .catch(error => console.error(error));
 
-    <!-- Container para a imagem em popup -->
-    <div id="popupContainer" class="popup-container">
-        <img id="popupImage" src="" alt="Imagem" />
-    </div>
+    // Função para exibir os dados na tabela
+    function exibirDados(dados) {
+        const tabela = document.getElementById('tabela-dados');
+        const tbody = tabela.querySelector('tbody');
 
-    <script>
-        // Carregar os dados do arquivo JSON
-        fetch('base_dados.json')
-            .then(response => response.json())
-            .then(data => {
-                exibirDados(data);
-                adicionarEventos();
-            })
-            .catch(error => console.error(error));
+        // Iterar sobre os dados e criar as linhas da tabela
+        dados.forEach((dado, index) => {
+            const linha = document.createElement('tr');
+            linha.classList.add(index % 2 === 0 ? 'table-row-even' : 'table-row-odd');
 
-        // Função para exibir os dados na tabela
-        function exibirDados(dados) {
-            const tabela = document.getElementById('tabela-dados');
-            const tbody = tabela.querySelector('tbody');
+            // Adicionar as células da linha com os valores dos dados
+            for (const prop in dado) {
+                const celula = document.createElement('td');
 
-            // Iterar sobre os dados e criar as linhas da tabela
-            dados.forEach((dado, index) => {
-                const linha = document.createElement('tr');
-                linha.classList.add(index % 2 === 0 ? 'table-row-even' : 'table-row-odd');
-
-                // Adicionar as células da linha com os valores dos dados
-                for (const prop in dado) {
-                    const celula = document.createElement('td');
-
-                    if (prop === 'Hiperlink Imagem') {
-                        // Criar um elemento de imagem (thumbnail) clicável
-                        const imagem = document.createElement('img');
-                        imagem.classList.add('thumbnail');
-                        imagem.src = dado[prop];
-                        imagem.addEventListener('click', () => {
-                            exibirImagemPopup(dado[prop]);
-                        });
-                        celula.appendChild(imagem);
-                    } else {
-                        celula.textContent = dado[prop];
-                    }
-
-                    linha.appendChild(celula);
+                if (prop === 'Hiperlink Imagem') {
+                    // Criar um elemento de imagem (thumbnail) clicável
+                    const imagem = document.createElement('img');
+                    imagem.classList.add('thumbnail');
+                    imagem.src = dado[prop];
+                    imagem.addEventListener('click', () => {
+                        exibirImagemPopup(dado[prop]);
+                    });
+                    celula.appendChild(imagem);
+                } else {
+                    celula.textContent = dado[prop];
                 }
 
-                // Adicionar a linha à tabela
-                tbody.appendChild(linha);
+                linha.appendChild(celula);
+            }
+
+            // Adicionar a linha à tabela
+            tbody.appendChild(linha);
+        });
+    }
+
+    // Função para adicionar eventos aos elementos da tabela
+    function adicionarEventos() {
+        const searchInput = document.getElementById('searchInput');
+        const tabela = document.getElementById('tabela-dados');
+        const tbody = tabela.querySelector('tbody');
+        const linhas = Array.from(tbody.getElementsByTagName('tr'));
+
+        // Evento de busca geral
+        searchInput.addEventListener('input', () => {
+            const termoBusca = searchInput.value.toLowerCase();
+
+            linhas.forEach(linha => {
+                const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
+
+                if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
+                    linha.style.display = '';
+                } else {
+                    linha.style.display = 'none';
+                }
             });
-        }
+        });
 
-        // Função para adicionar eventos aos elementos da tabela
-        function adicionarEventos() {
-            const searchBars = document.getElementsByClassName('search-bar');
-            const tabela = document.getElementById('tabela-dados');
-            const tbody = tabela.querySelector('tbody');
-            const linhas = Array.from(tbody.getElementsByTagName('tr'));
+        // Eventos de filtro de colunas
+        const colunasFiltro = Array.from(tabela.querySelectorAll('th input'));
+        colunasFiltro.forEach(coluna => {
+            coluna.addEventListener('input', () => {
+                const colunaIndex = getIndexByColumnName(coluna.parentNode.textContent);
+                const termoFiltro = coluna.value.toLowerCase();
 
-            // Evento de busca por cada campo
-            Array.from(searchBars).forEach(searchBar => {
-                searchBar.addEventListener('input', () => {
-                    const termoBusca = searchBar.value.toLowerCase();
-                    const indexColuna = getIndexByColumnName(searchBar.placeholder);
+                linhas.forEach(linha => {
+                    const valorCelula = getCellValue(linha, colunaIndex).toLowerCase();
 
-                    linhas.forEach(linha => {
-                        const valorCelula = getCellValue(linha, indexColuna);
-
-                        if (valorCelula.toLowerCase().includes(termoBusca)) {
-                            linha.style.display = '';
-                        } else {
-                            linha.style.display = 'none';
-                        }
-                    });
+                    if (valorCelula.includes(termoFiltro)) {
+                        linha.style.display = '';
+                    } else {
+                        linha.style.display = 'none';
+                    }
                 });
             });
-        }
+        });
+    }
 
-        // Função para obter o valor de uma célula específica
-        function getCellValue(linha, indexColuna) {
-            const celulas = linha.getElementsByTagName('td');
-            return celulas[indexColuna].textContent;
-        }
+    // Função para obter o valor de uma célula específica
+    function getCellValue(linha, indexColuna) {
+        const celulas = linha.getElementsByTagName('td');
+        return celulas[indexColuna].textContent;
+    }
 
-        // Função para obter o índice da coluna pelo nome da coluna
-        function getIndexByColumnName(columnName) {
-            const tabela = document.getElementById('tabela-dados');
-            const colunas = Array.from(tabela.getElementsByTagName('th'));
-            return colunas.findIndex(coluna => coluna.textContent === columnName);
-        }
+    // Função para obter o índice da coluna pelo nome da coluna
+    function getIndexByColumnName(columnName) {
+        const tabela = document.getElementById('tabela-dados');
+        const colunas = Array.from(tabela.getElementsByTagName('th'));
+        return colunas.findIndex(coluna => coluna.textContent === columnName);
+    }
 
-        // Função para exibir a imagem em um popup
-        function exibirImagemPopup(src) {
-            const popupContainer = document.getElementById('popupContainer');
-            const popupImage = document.getElementById('popupImage');
-            popupImage.src = src;
-            popupContainer.style.display = 'flex';
-            popupContainer.addEventListener('click', () => {
-                popupContainer.style.display = 'none';
-            });
+    // Função para exibir a imagem em popup
+    function exibirImagemPopup(imagemUrl) {
+        const popupImage = document.getElementById('popupImage');
+        popupImage.src = imagemUrl;
+        const popupContainer = document.getElementById('popupContainer');
+        popupContainer.style.display = 'block';
+    }
+
+    // Fechar a imagem em popup ao clicar fora dela
+    window.addEventListener('click', event => {
+        const popupContainer = document.getElementById('popupContainer');
+        if (event.target === popupContainer) {
+            popupContainer.style.display = 'none';
         }
-    </script>
+    });
+</script>
 </body>
 </html>

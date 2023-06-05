@@ -15,68 +15,108 @@
             margin-bottom: 10px;
         }
 
-        .table-header {
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+
+        .table th {
             background-color: lightgreen;
         }
 
         .table-row-even {
-            background-color: #f9f9f9;
+            background-color: #f2f2f2;
         }
 
         .table-row-odd {
-            background-color: #ffffff;
+            background-color: #fff;
         }
 
-        .table-row-divider {
-            background-color: black;
-            height: 2px;
+        .table-row-divider td {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            background-color: lightgray;
+            padding: 0;
+        }
+
+        .table-row-divider td:first-child {
+            border-left: 1px solid #000;
+        }
+
+        .table-row-divider td:last-child {
+            border-right: 1px solid #000;
         }
 
         .popup-container {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
             z-index: 9999;
         }
 
         .popup-container img {
-            max-width: 100%;
-            height: auto;
+            max-width: 90%;
+            max-height: 90%;
         }
     </style>
 </head>
 <body>
     <h1>Lista de Miniaturas</h1>
 
-    <!-- Barra de busca -->
-    <input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
+    <!-- Link para a página Dashboard -->
+    <a href="dashboard.html">Dashboard</a>
+
+    <!-- Filtros -->
+    <input type="text" class="search-bar" placeholder="Filtrar por Model Name">
+    <input type="text" class="search-bar" placeholder="Filtrar por Release Year">
+    <input type="text" class="search-bar" placeholder="Filtrar por Series">
+    <input type="text" class="search-bar" placeholder="Filtrar por Color">
+    <input type="text" class="search-bar" placeholder="Filtrar por Tampo">
+    <input type="text" class="search-bar" placeholder="Filtrar por Wheel Type">
+    <input type="text" class="search-bar" placeholder="Filtrar por Base Type">
+    <input type="text" class="search-bar" placeholder="Filtrar por Base Color">
+    <input type="text" class="search-bar" placeholder="Filtrar por Window Color">
+    <input type="text" class="search-bar" placeholder="Filtrar por Interior Color">
+    <input type="text" class="search-bar" placeholder="Filtrar por Toy #">
+    <input type="text" class="search-bar" placeholder="Filtrar por Scale">
+    <input type="text" class="search-bar" placeholder="Filtrar por Country">
+    <input type="text" class="search-bar" placeholder="Filtrar por Notes">
+    <input type="text" class="search-bar" placeholder="Filtrar por Base Codes">
+    <input type="text" class="search-bar" placeholder="Filtrar por Case Number">
+    <input type="text" class="search-bar" placeholder="Filtrar por Mainline">
 
     <!-- Tabela para exibir os dados -->
-    <table id="tabela-dados">
+    <table id="tabela-dados" class="table">
         <thead>
             <tr>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Model Name"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Release Year"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Series"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Color"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Tampo"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Wheel Type"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Type"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Color"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Window Color"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Interior Color"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Toy #"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Scale"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Country"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Notes"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Codes"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Case Number"></th>
-                <th><input type="text" class="search-bar" placeholder="Filtrar por Mainline"></th>
+                <th>Model Name</th>
+                <th>Release Year</th>
+                <th>Series</th>
+                <th>Color</th>
+                <th>Tampo</th>
+                <th>Wheel Type</th>
+                <th>Base Type</th>
+                <th>Base Color</th>
+                <th>Window Color</th>
+                <th>Interior Color</th>
+                <th>Toy #</th>
+                <th>Scale</th>
+                <th>Country</th>
+                <th>Notes</th>
+                <th>Base Codes</th>
+                <th>Case Number</th>
+                <th>Mainline</th>
                 <th>Hiperlink Imagem</th>
             </tr>
         </thead>
@@ -85,8 +125,9 @@
         </tbody>
     </table>
 
+    <!-- Container para a imagem em popup -->
     <div id="popupContainer" class="popup-container">
-        <img id="popupImage" src="">
+        <img id="popupImage" src="" alt="Imagem" />
     </div>
 
     <script>
@@ -132,92 +173,55 @@
                 // Adicionar a linha à tabela
                 tbody.appendChild(linha);
             });
-
-            // Adicionar as linhas de divisão
-            const linhas = tbody.querySelectorAll('tr');
-            linhas.forEach(linha => {
-                const linhaDivisoria = document.createElement('tr');
-                linhaDivisoria.innerHTML = '<td colspan="18" class="table-row-divider"></td>';
-                tbody.insertBefore(linhaDivisoria, linha.nextSibling);
-            });
         }
 
         // Função para adicionar eventos aos elementos da tabela
         function adicionarEventos() {
-            const searchInput = document.getElementById('searchInput');
+            const searchBars = document.getElementsByClassName('search-bar');
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
             const linhas = Array.from(tbody.getElementsByTagName('tr'));
 
-            // Evento de busca
-            searchInput.addEventListener('input', () => {
-                const termoBusca = searchInput.value.toLowerCase();
+            // Evento de busca por cada campo
+            Array.from(searchBars).forEach(searchBar => {
+                searchBar.addEventListener('input', () => {
+                    const termoBusca = searchBar.value.toLowerCase();
+                    const indexColuna = getIndexByColumnName(searchBar.placeholder);
 
-                linhas.forEach(linha => {
-                    const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
+                    linhas.forEach(linha => {
+                        const valorCelula = getCellValue(linha, indexColuna);
 
-                    if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
-                        linha.style.display = '';
-                    } else {
-                        linha.style.display = 'none';
-                    }
+                        if (valorCelula.toLowerCase().includes(termoBusca)) {
+                            linha.style.display = '';
+                        } else {
+                            linha.style.display = 'none';
+                        }
+                    });
                 });
             });
+        }
 
-            // Evento de ordenação
-            const orderSelect = document.getElementById('orderSelect');
-            orderSelect.addEventListener('change', ordenarDados);
+        // Função para obter o valor de uma célula específica
+        function getCellValue(linha, indexColuna) {
+            const celulas = linha.getElementsByTagName('td');
+            return celulas[indexColuna].textContent;
+        }
 
-            // Função para obter o valor de uma célula da tabela
-            function getCellValue(linha, colunaIndex) {
-                const celula = linha.getElementsByTagName('td')[colunaIndex];
-                return celula.textContent || celula.innerText;
-            }
-
-            // Função para obter o índice da coluna pelo nome da coluna
-            function getIndexByColumnName(nomeColuna) {
-                const cabecalho = tabela.querySelector('thead tr');
-                const celulasCabecalho = cabecalho.getElementsByTagName('th');
-                for (let i = 0; i < celulasCabecalho.length; i++) {
-                    if (celulasCabecalho[i].textContent === nomeColuna) {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-
-            // Função para ordenar os dados da tabela
-            function ordenarDados() {
-                const nomeColuna = orderSelect.value;
-                const colunaIndex = getIndexByColumnName(nomeColuna);
-
-                linhas.sort((a, b) => {
-                    const valorA = getCellValue(a, colunaIndex);
-                    const valorB = getCellValue(b, colunaIndex);
-                    return valorA.localeCompare(valorB);
-                });
-
-                tbody.innerHTML = '';
-
-                linhas.forEach(linha => {
-                    tbody.appendChild(linha);
-                });
-            }
+        // Função para obter o índice da coluna pelo nome da coluna
+        function getIndexByColumnName(columnName) {
+            const tabela = document.getElementById('tabela-dados');
+            const colunas = Array.from(tabela.getElementsByTagName('th'));
+            return colunas.findIndex(coluna => coluna.textContent === columnName);
         }
 
         // Função para exibir a imagem em um popup
-        function exibirImagemPopup(urlImagem) {
+        function exibirImagemPopup(src) {
             const popupContainer = document.getElementById('popupContainer');
             const popupImage = document.getElementById('popupImage');
-
-            popupImage.src = urlImagem;
-            popupContainer.style.display = 'block';
-
-            // Fechar o popup quando clicar fora da imagem
-            popupContainer.addEventListener('click', event => {
-                if (event.target === popupContainer) {
-                    popupContainer.style.display = 'none';
-                }
+            popupImage.src = src;
+            popupContainer.style.display = 'flex';
+            popupContainer.addEventListener('click', () => {
+                popupContainer.style.display = 'none';
             });
         }
     </script>

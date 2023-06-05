@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard de Miniaturas</title>
+    <style>
+        /* Estilos CSS */
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            width: 300px;
+        }
+
+        .total-count {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard de Miniaturas</h1>
+
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="anoChart"></canvas>
+        </div>
+        <div class="total-count">
+            Total de Miniaturas: <span id="totalCount"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Carregar os dados do arquivo JSON
+        fetch('base_dados.json')
+            .then(response => response.json())
+            .then(data => {
+                exibirDashboard(data);
+            })
+            .catch(error => console.error(error));
+
+        // Função para exibir o dashboard
+        function exibirDashboard(dados) {
+            // Contagem total de miniaturas
+            const totalCount = dados.length;
+            const totalCountElement = document.getElementById('totalCount');
+            totalCountElement.textContent = totalCount;
+
+            // Agrupar miniaturas por ano
+            const miniaturasPorAno = agruparPorAno(dados);
+
+            // Gerar gráfico de pizza
+            const anoChart = document.getElementById('anoChart').getContext('2d');
+            new Chart(anoChart, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(miniaturasPorAno),
+                    datasets: [{
+                        label: 'Miniaturas por Ano',
+                        data: Object.values(miniaturasPorAno),
+                        backgroundColor: getRandomColors(Object.keys(miniaturasPorAno).length)
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        // Função auxiliar para agrupar miniaturas por ano
+        function agruparPorAno(dados) {
+            const miniaturasPorAno = {};
+            dados.forEach(dado => {
+                const ano = dado['Release Year'];
+                if (miniaturasPorAno[ano]) {
+                    miniaturasPorAno[ano]++;
+                } else {
+                    miniaturasPorAno[ano] = 1;
+                }
+            });
+            return miniaturasPorAno;
+        }
+
+        // Função auxiliar para gerar cores aleatórias
+        function getRandomColors(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+                colors.push(color);
+            }
+            return colors;
+        }
+    </script>
+</body>
+</html>

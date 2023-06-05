@@ -9,10 +9,49 @@
         .thumbnail {
             width: 100px;
             height: auto;
+            cursor: pointer;
         }
 
         .search-bar {
             margin-bottom: 10px;
+        }
+
+        /* Estilos para o popup de imagem */
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .popup-container img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        /* Estilos para a tabela */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #000;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -51,6 +90,11 @@
         </tbody>
     </table>
 
+    <!-- Popup de imagem -->
+    <div id="popupContainer" class="popup-container">
+        <img id="popupImage" src="" alt="Imagem da Miniatura">
+    </div>
+
     <script>
         // Carregar os dados do arquivo JSON
         fetch('base_dados.json')
@@ -67,7 +111,7 @@
             const tbody = tabela.querySelector('tbody');
 
             // Iterar sobre os dados e criar as linhas da tabela
-            dados.forEach(dado => {
+            dados.forEach((dado, index) => {
                 const linha = document.createElement('tr');
 
                 // Adicionar as células da linha com os valores dos dados
@@ -80,7 +124,7 @@
                         imagem.classList.add('thumbnail');
                         imagem.src = dado[prop];
                         imagem.addEventListener('click', () => {
-                            window.open(dado[prop]);
+                            exibirImagemPopup(dado[prop]);
                         });
                         celula.appendChild(imagem);
                     } else {
@@ -92,6 +136,11 @@
 
                 // Adicionar a linha à tabela
                 tbody.appendChild(linha);
+
+                // Adicionar divisões de linhas fortes
+                if (index % 2 === 0) {
+                    linha.classList.add('strong-row');
+                }
             });
         }
 

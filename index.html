@@ -10,6 +10,10 @@
             height: auto;
             cursor: pointer;
         }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f8f9fa;
+        }
     </style>
 </head>
 <body>
@@ -45,8 +49,18 @@
         </tbody>
     </table>
 
-    <div id="imagem-popup">
-        <img id="imagem-popup-img" class="thumbnail" src="" alt="Imagem Popup">
+    <!-- Modal para exibir a imagem -->
+    <div id="imagem-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="imagem-modal-img" class="thumbnail" src="" alt="Imagem">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -89,7 +103,7 @@
                         imagem.classList.add('thumbnail');
                         imagem.src = dado[prop];
                         imagem.addEventListener('click', () => {
-                            abrirImagemPopup(dado[prop]);
+                            abrirImagemModal(dado[prop]);
                         });
                         celula.appendChild(imagem);
                     } else {
@@ -104,21 +118,12 @@
             });
         }
 
-        // Função para abrir a imagem em um popup
-        function abrirImagemPopup(src) {
-            const popup = document.getElementById('imagem-popup');
-            const imagem = document.getElementById('imagem-popup-img');
-            imagem.src = src;
-            popup.style.display = 'block';
+        // Função para abrir a imagem no modal
+        function abrirImagemModal(src) {
+            const imagemModal = document.getElementById('imagem-modal-img');
+            imagemModal.src = src;
+            $('#imagem-modal').modal('show');
         }
-
-        // Evento para fechar o popup de imagem
-        document.addEventListener('click', function (event) {
-            const popup = document.getElementById('imagem-popup');
-            if (event.target !== popup && !popup.contains(event.target)) {
-                popup.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>

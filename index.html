@@ -47,11 +47,32 @@
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #e0f0d8;
         }
 
         tr:nth-child(even) td {
             background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) td {
+            background-color: #ffffff;
+        }
+
+        tr td:first-child {
+            border-left: 1px solid #000;
+        }
+
+        tr td:last-child {
+            border-right: 1px solid #000;
+        }
+
+        /* Estilos para os filtros */
+        .filter-select {
+            margin-bottom: 10px;
+        }
+
+        .order-select {
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -60,6 +81,23 @@
 
     <!-- Barra de busca -->
     <input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
+
+    <!-- Filtros -->
+    <select id="filterSelect" class="filter-select">
+        <option value="">Filtrar por:</option>
+        <option value="Model Name">Model Name</option>
+        <option value="Release Year">Release Year</option>
+        <option value="Series">Series</option>
+        <!-- Adicione mais opções de filtro para as outras colunas -->
+    </select>
+
+    <!-- Ordenação -->
+    <select id="orderSelect" class="order-select">
+        <option value="">Ordenar por:</option>
+        <option value="asc">Ordem Crescente</option>
+        <option value="desc">Ordem Decrescente</option>
+        <option value="cadastro">Ordem de Cadastro</option>
+    </select>
 
     <!-- Tabela para exibir os dados -->
     <table id="tabela-dados">
@@ -92,7 +130,7 @@
 
     <!-- Popup de imagem -->
     <div id="popupContainer" class="popup-container">
-        <img id="popupImage" src="" alt="Imagem da Miniatura">
+        <img id="popupImage" src="" alt="Imagem" />
     </div>
 
     <script>
@@ -109,6 +147,11 @@
         function exibirDados(dados) {
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
+
+            // Limpar a tabela
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
 
             // Iterar sobre os dados e criar as linhas da tabela
             dados.forEach((dado, index) => {
@@ -137,9 +180,11 @@
                 // Adicionar a linha à tabela
                 tbody.appendChild(linha);
 
-                // Adicionar divisões de linhas fortes
+                // Aplicar cores alternadas para linhas de dados
                 if (index % 2 === 0) {
-                    linha.classList.add('strong-row');
+                    linha.style.backgroundColor = '#ffffff';
+                } else {
+                    linha.style.backgroundColor = '#f9f9f9';
                 }
             });
         }
@@ -147,24 +192,93 @@
         // Função para adicionar eventos aos elementos da tabela
         function adicionarEventos() {
             const searchInput = document.getElementById('searchInput');
+            const filterSelect = document.getElementById('filterSelect');
+            const orderSelect = document.getElementById('orderSelect');
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
             const linhas = Array.from(tbody.getElementsByTagName('tr'));
 
             // Evento de busca
             searchInput.addEventListener('input', () => {
+                filtrarDados();
+            });
+
+            // Evento de filtro
+            filterSelect.addEventListener('change', () => {
+                filtrarDados();
+            });
+
+            // Evento de ordenação
+            orderSelect.addEventListener('change', () => {
+                ordenarDados();
+            });
+
+            // Função para filtrar os dados
+            function filtrarDados() {
                 const termoBusca = searchInput.value.toLowerCase();
+                const filtroColuna = filterSelect.value;
 
                 linhas.forEach(linha => {
                     const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
 
-                    if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
+                    if (valoresCelulas.some(valor => valor.includes(termoBusca)) && (filtroColuna === '' || valoresCelulas[getIndexByColumnName(filtroColuna)].includes(termoBusca))) {
                         linha.style.display = '';
                     } else {
                         linha.style.display = 'none';
                     }
                 });
-            });
+            }
+
+            // Função para ordenar os dados
+            function ordenarDados() {
+                const ordem = orderSelect.value;
+
+                if (ordem === 'asc') {
+                    linhas.sort((linhaA, linhaB) => {
+                        const valorA = getCellValue(linhaA, 1);
+                        const valorB = getCellValue(linhaB, 1);
+                        return valorA.localeCompare(valorB);
+                    });
+                } else if (ordem === 'desc') {
+                    linhas.sort((linhaA, linhaB) => {
+                        const valorA = getCellValue(linhaA, 1);
+                        const valorB = getCellValue(linhaB, 1);
+                        return valorB.localeCompare(valorA);
+                    });
+                } else if (ordem === 'cadastro') {
+                    linhas.sort((linhaA, linhaB) => {
+                        const valorA = linhas.indexOf(linhaA);
+                        const valorB = linhas.indexOf(linhaB);
+                        return valorA - valorB;
+                    });
+                }
+
+                // Reordenar as linhas na tabela
+                linhas.forEach(linha => {
+                    tabela.appendChild(linha);
+                });
+            }
+
+            // Função para obter o valor de uma célula da tabela
+            function getCellValue(linha, colunaIndex) {
+                const celula = linha.getElementsByTagName('td')[colunaIndex];
+                return celula.textContent || celula.innerText;
+            }
+
+            // Função para obter o índice da coluna pelo nome da coluna
+            function getIndexByColumnName(nomeColuna) {
+                const cabecalho = tabela.querySelector('thead tr');
+                const celulasCabecalho = Array.from(cabecalho.getElementsByTagName('th'));
+                return celulasCabecalho.findIndex(celula => celula.textContent === nomeColuna);
+            }
+        }
+
+        // Função para exibir o popup de imagem
+        function exibirImagemPopup(srcImagem) {
+            const popupContainer = document.getElementById('popupContainer');
+            const popupImage = document.getElementById('popupImage');
+            popupImage.src = srcImagem;
+            popupContainer.style.display = 'block';
         }
     </script>
 </body>

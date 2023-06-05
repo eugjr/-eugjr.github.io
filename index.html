@@ -107,4 +107,16 @@
                 const termoBusca = searchInput.value.toLowerCase();
 
                 linhas.forEach(linha => {
-                    const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map
+                    const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
+
+                    if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
+                        linha.style.display = '';
+                    } else {
+                        linha.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

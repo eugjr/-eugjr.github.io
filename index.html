@@ -9,70 +9,44 @@
         .thumbnail {
             width: 100px;
             height: auto;
-            cursor: pointer;
         }
 
         .search-bar {
             margin-bottom: 10px;
         }
 
-        /* Estilos para o popup de imagem */
+        .table-header {
+            background-color: lightgreen;
+        }
+
+        .table-row-even {
+            background-color: #f9f9f9;
+        }
+
+        .table-row-odd {
+            background-color: #ffffff;
+        }
+
+        .table-row-divider {
+            background-color: black;
+            height: 2px;
+        }
+
         .popup-container {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 9999;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: white;
             padding: 20px;
-            text-align: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
         }
 
         .popup-container img {
-            max-width: 80%;
-            max-height: 80%;
-        }
-
-        /* Estilos para a tabela */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #000;
-        }
-
-        th {
-            background-color: #e0f0d8;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #f9f9f9;
-        }
-
-        tr:nth-child(odd) td {
-            background-color: #ffffff;
-        }
-
-        tr td:first-child {
-            border-left: 1px solid #000;
-        }
-
-        tr td:last-child {
-            border-right: 1px solid #000;
-        }
-
-        /* Estilos para os filtros */
-        .filter-select {
-            margin-bottom: 10px;
-        }
-
-        .order-select {
-            margin-bottom: 10px;
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -82,44 +56,27 @@
     <!-- Barra de busca -->
     <input type="text" id="searchInput" class="search-bar" placeholder="Digite para buscar">
 
-    <!-- Filtros -->
-    <select id="filterSelect" class="filter-select">
-        <option value="">Filtrar por:</option>
-        <option value="Model Name">Model Name</option>
-        <option value="Release Year">Release Year</option>
-        <option value="Series">Series</option>
-        <!-- Adicione mais opções de filtro para as outras colunas -->
-    </select>
-
-    <!-- Ordenação -->
-    <select id="orderSelect" class="order-select">
-        <option value="">Ordenar por:</option>
-        <option value="asc">Ordem Crescente</option>
-        <option value="desc">Ordem Decrescente</option>
-        <option value="cadastro">Ordem de Cadastro</option>
-    </select>
-
     <!-- Tabela para exibir os dados -->
     <table id="tabela-dados">
         <thead>
             <tr>
-                <th>Model Name</th>
-                <th>Release Year</th>
-                <th>Series</th>
-                <th>Color</th>
-                <th>Tampo</th>
-                <th>Wheel Type</th>
-                <th>Base Type</th>
-                <th>Base Color</th>
-                <th>Window Color</th>
-                <th>Interior Color</th>
-                <th>Toy #</th>
-                <th>Scale</th>
-                <th>Country</th>
-                <th>Notes</th>
-                <th>Base Codes</th>
-                <th>Case Number</th>
-                <th>Mainline</th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Model Name"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Release Year"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Series"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Color"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Tampo"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Wheel Type"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Type"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Color"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Window Color"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Interior Color"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Toy #"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Scale"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Country"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Notes"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Base Codes"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Case Number"></th>
+                <th><input type="text" class="search-bar" placeholder="Filtrar por Mainline"></th>
                 <th>Hiperlink Imagem</th>
             </tr>
         </thead>
@@ -128,9 +85,8 @@
         </tbody>
     </table>
 
-    <!-- Popup de imagem -->
     <div id="popupContainer" class="popup-container">
-        <img id="popupImage" src="" alt="Imagem" />
+        <img id="popupImage" src="">
     </div>
 
     <script>
@@ -148,14 +104,10 @@
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
 
-            // Limpar a tabela
-            while (tbody.firstChild) {
-                tbody.removeChild(tbody.firstChild);
-            }
-
             // Iterar sobre os dados e criar as linhas da tabela
             dados.forEach((dado, index) => {
                 const linha = document.createElement('tr');
+                linha.classList.add(index % 2 === 0 ? 'table-row-even' : 'table-row-odd');
 
                 // Adicionar as células da linha com os valores dos dados
                 for (const prop in dado) {
@@ -179,85 +131,42 @@
 
                 // Adicionar a linha à tabela
                 tbody.appendChild(linha);
+            });
 
-                // Aplicar cores alternadas para linhas de dados
-                if (index % 2 === 0) {
-                    linha.style.backgroundColor = '#ffffff';
-                } else {
-                    linha.style.backgroundColor = '#f9f9f9';
-                }
+            // Adicionar as linhas de divisão
+            const linhas = tbody.querySelectorAll('tr');
+            linhas.forEach(linha => {
+                const linhaDivisoria = document.createElement('tr');
+                linhaDivisoria.innerHTML = '<td colspan="18" class="table-row-divider"></td>';
+                tbody.insertBefore(linhaDivisoria, linha.nextSibling);
             });
         }
 
         // Função para adicionar eventos aos elementos da tabela
         function adicionarEventos() {
             const searchInput = document.getElementById('searchInput');
-            const filterSelect = document.getElementById('filterSelect');
-            const orderSelect = document.getElementById('orderSelect');
             const tabela = document.getElementById('tabela-dados');
             const tbody = tabela.querySelector('tbody');
             const linhas = Array.from(tbody.getElementsByTagName('tr'));
 
             // Evento de busca
             searchInput.addEventListener('input', () => {
-                filtrarDados();
-            });
-
-            // Evento de filtro
-            filterSelect.addEventListener('change', () => {
-                filtrarDados();
-            });
-
-            // Evento de ordenação
-            orderSelect.addEventListener('change', () => {
-                ordenarDados();
-            });
-
-            // Função para filtrar os dados
-            function filtrarDados() {
                 const termoBusca = searchInput.value.toLowerCase();
-                const filtroColuna = filterSelect.value;
 
                 linhas.forEach(linha => {
                     const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
 
-                    if (valoresCelulas.some(valor => valor.includes(termoBusca)) && (filtroColuna === '' || valoresCelulas[getIndexByColumnName(filtroColuna)].includes(termoBusca))) {
+                    if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
                         linha.style.display = '';
                     } else {
                         linha.style.display = 'none';
                     }
                 });
-            }
+            });
 
-            // Função para ordenar os dados
-            function ordenarDados() {
-                const ordem = orderSelect.value;
-
-                if (ordem === 'asc') {
-                    linhas.sort((linhaA, linhaB) => {
-                        const valorA = getCellValue(linhaA, 1);
-                        const valorB = getCellValue(linhaB, 1);
-                        return valorA.localeCompare(valorB);
-                    });
-                } else if (ordem === 'desc') {
-                    linhas.sort((linhaA, linhaB) => {
-                        const valorA = getCellValue(linhaA, 1);
-                        const valorB = getCellValue(linhaB, 1);
-                        return valorB.localeCompare(valorA);
-                    });
-                } else if (ordem === 'cadastro') {
-                    linhas.sort((linhaA, linhaB) => {
-                        const valorA = linhas.indexOf(linhaA);
-                        const valorB = linhas.indexOf(linhaB);
-                        return valorA - valorB;
-                    });
-                }
-
-                // Reordenar as linhas na tabela
-                linhas.forEach(linha => {
-                    tabela.appendChild(linha);
-                });
-            }
+            // Evento de ordenação
+            const orderSelect = document.getElementById('orderSelect');
+            orderSelect.addEventListener('change', ordenarDados);
 
             // Função para obter o valor de uma célula da tabela
             function getCellValue(linha, colunaIndex) {
@@ -268,17 +177,48 @@
             // Função para obter o índice da coluna pelo nome da coluna
             function getIndexByColumnName(nomeColuna) {
                 const cabecalho = tabela.querySelector('thead tr');
-                const celulasCabecalho = Array.from(cabecalho.getElementsByTagName('th'));
-                return celulasCabecalho.findIndex(celula => celula.textContent === nomeColuna);
+                const celulasCabecalho = cabecalho.getElementsByTagName('th');
+                for (let i = 0; i < celulasCabecalho.length; i++) {
+                    if (celulasCabecalho[i].textContent === nomeColuna) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            // Função para ordenar os dados da tabela
+            function ordenarDados() {
+                const nomeColuna = orderSelect.value;
+                const colunaIndex = getIndexByColumnName(nomeColuna);
+
+                linhas.sort((a, b) => {
+                    const valorA = getCellValue(a, colunaIndex);
+                    const valorB = getCellValue(b, colunaIndex);
+                    return valorA.localeCompare(valorB);
+                });
+
+                tbody.innerHTML = '';
+
+                linhas.forEach(linha => {
+                    tbody.appendChild(linha);
+                });
             }
         }
 
-        // Função para exibir o popup de imagem
-        function exibirImagemPopup(srcImagem) {
+        // Função para exibir a imagem em um popup
+        function exibirImagemPopup(urlImagem) {
             const popupContainer = document.getElementById('popupContainer');
             const popupImage = document.getElementById('popupImage');
-            popupImage.src = srcImagem;
+
+            popupImage.src = urlImagem;
             popupContainer.style.display = 'block';
+
+            // Fechar o popup quando clicar fora da imagem
+            popupContainer.addEventListener('click', event => {
+                if (event.target === popupContainer) {
+                    popupContainer.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>

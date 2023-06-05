@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Miniaturas</title>
+    <style>
+        /* Estilos CSS */
+
+        .thumbnail {
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Miniaturas</h1>
+
+    <!-- Tabela para exibir os dados -->
+    <table id="tabela-dados">
+        <thead>
+            <tr>
+                <th>Model Name</th>
+                <th>Release Year</th>
+                <th>Series</th>
+                <th>Color</th>
+                <th>Tampo</th>
+                <th>Wheel Type</th>
+                <th>Base Type</th>
+                <th>Base Color</th>
+                <th>Window Color</th>
+                <th>Interior Color</th>
+                <th>Toy #</th>
+                <th>Scale</th>
+                <th>Country</th>
+                <th>Notes</th>
+                <th>Base Codes</th>
+                <th>Case Number</th>
+                <th>Mainline</th>
+                <th>Hiperlink Imagem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Linhas de dados -->
+        </tbody>
+    </table>
+
+    <script>
+        // Carregar os dados do arquivo JSON
+        fetch('base_dados.json')
+            .then(response => response.json())
+            .then(data => exibirDados(data))
+            .catch(error => console.error(error));
+
+        // Função para exibir os dados na tabela
+        function exibirDados(dados) {
+            const tabela = document.getElementById('tabela-dados');
+            const tbody = tabela.querySelector('tbody');
+
+            // Iterar sobre os dados e criar as linhas da tabela
+            dados.forEach(dado => {
+                const linha = document.createElement('tr');
+
+                // Adicionar as células da linha com os valores dos dados
+                for (const prop in dado) {
+                    const celula = document.createElement('td');
+
+                    if (prop === 'Hiperlink Imagem') {
+                        // Criar um elemento de imagem (thumbnail)
+                        const imagem = document.createElement('img');
+                        imagem.classList.add('thumbnail');
+                        imagem.src = dado[prop];
+                        celula.appendChild(imagem);
+                    } else {
+                        celula.textContent = dado[prop];
+                    }
+
+                    linha.appendChild(celula);
+                }
+
+                // Adicionar a linha à tabela
+                tbody.appendChild(linha);
+            });
+        }
+    </script>
+</body>
+</html>

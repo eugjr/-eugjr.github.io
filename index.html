@@ -14,6 +14,25 @@
         tbody tr:nth-of-type(odd) {
             background-color: #f8f9fa;
         }
+
+        #popupContainer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        #popupImage {
+            max-width: 80%;
+            max-height: 80%;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -52,18 +71,8 @@
         </tbody>
     </table>
 
-    <!-- Modal para exibir a imagem -->
-    <div id="imagem-modal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <img id="imagem-modal-img" class="thumbnail" src="" alt="Imagem">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
+    <div id="popupContainer">
+        <img id="popupImage" class="thumbnail" src="" alt="Imagem">
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -101,7 +110,7 @@
                         imagem.classList.add('thumbnail');
                         imagem.src = dado[prop];
                         imagem.addEventListener('click', () => {
-                            abrirImagemModal(dado[prop]);
+                            exibirImagemPopup(dado[prop]);
                         });
                         celula.appendChild(imagem);
                     } else {
@@ -116,37 +125,27 @@
             });
         }
 
-        // Função para abrir a imagem no modal
-        function abrirImagemModal(src) {
-            const imagemModal = document.getElementById('imagem-modal-img');
-            imagemModal.src = src;
-            $('#imagem-modal').modal('show');
+        // Função para abrir a imagem em popup
+        function exibirImagemPopup(imagemUrl) {
+            const popupImage = document.getElementById('popupImage');
+            popupImage.src = imagemUrl;
+            const popupContainer = document.getElementById('popupContainer');
+            popupContainer.style.display = 'block';
         }
+
+        // Fechar a imagem em popup ao clicar fora dela
+        window.addEventListener('click', event => {
+            const popupContainer = document.getElementById('popupContainer');
+            if (event.target === popupContainer) {
+                popupContainer.style.display = 'none';
+            }
+        });
 
         // Função para iniciar o DataTable
         function iniciarDataTable() {
             $('#tabela-dados').DataTable({
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/pt_br.json'
-                },
-                initComplete: function () {
-                    this.api().columns().every(function () {
-                        var column = this;
-                        var select = $('<select class="form-select form-select-sm"><option value="">Filtrar por</option></select>')
-                            .appendTo($(column.footer()).empty())
-                            .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-                                column
-                                    .search(val ? '^' + val + '$' : '', true, false)
-                                    .draw();
-                            });
-
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>');
-                        });
-                    });
                 }
             });
         }

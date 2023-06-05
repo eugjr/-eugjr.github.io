@@ -1,101 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <title>Dashboard de Miniaturas</title>
-    <style>
-        /* Estilos CSS */
-
-        .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .chart-container {
-            width: 300px;
-        }
-
-        .total-count {
-            font-size: 24px;
-            font-weight: bold;
-        }
-    </style>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Dashboard de Miniaturas</h1>
+    <h2>Total de Miniaturas: <span id="total"></span></h2>
 
-    <div class="container">
-        <div class="chart-container">
-            <canvas id="anoChart"></canvas>
-        </div>
-        <div class="total-count">
-            Total de Miniaturas: <span id="totalCount"></span>
-        </div>
-    </div>
+    <h2>Distribuição de Cores</h2>
+    <canvas id="chartPizza"></canvas>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <h2>Quantidade por Ano de Lançamento</h2>
+    <canvas id="chartBarra"></canvas>
+
     <script>
-        // Carregar os dados do arquivo JSON
-        fetch('base_dados.json')
-            .then(response => response.json())
-            .then(data => {
-                exibirDashboard(data);
-            })
-            .catch(error => console.error(error));
+        d3.json("base_dados.json").then(function(data) {
+            var totalMiniaturas = data.length;
+            document.getElementById('total').textContent = totalMiniaturas;
 
-        // Função para exibir o dashboard
-        function exibirDashboard(dados) {
-            // Contagem total de miniaturas
-            const totalCount = dados.length;
-            const totalCountElement = document.getElementById('totalCount');
-            totalCountElement.textContent = totalCount;
+            var cores = {};
+            var lancamentos = {};
 
-            // Agrupar miniaturas por ano
-            const miniaturasPorAno = agruparPorAno(dados);
+            data.forEach(function(d) {
+                if(cores[d.Color]){
+                    cores[d.Color]++;
+                } else {
+                    cores[d.Color] = 1;
+                }
 
-            // Gerar gráfico de pizza
-            const anoChart = document.getElementById('anoChart').getContext('2d');
-            new Chart(anoChart, {
+                if(lancamentos[d['Release Year']]){
+                    lancamentos[d['Release Year']]++;
+                } else {
+                    lancamentos[d['Release Year']] = 1;
+                }
+            });
+
+            var ctxPizza = document.getElementById('chartPizza').getContext('2d');
+            var chartPizza = new Chart(ctxPizza, {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(miniaturasPorAno),
+                    labels: Object.keys(cores),
                     datasets: [{
-                        label: 'Miniaturas por Ano',
-                        data: Object.values(miniaturasPorAno),
-                        backgroundColor: getRandomColors(Object.keys(miniaturasPorAno).length)
+                        data: Object.values(cores),
+                        backgroundColor: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'] // Altere estas cores conforme necessário
                     }]
                 },
                 options: {
                     responsive: true
                 }
             });
-        }
 
-        // Função auxiliar para agrupar miniaturas por ano
-        function agruparPorAno(dados) {
-            const miniaturasPorAno = {};
-            dados.forEach(dado => {
-                const ano = dado['Release Year'];
-                if (miniaturasPorAno[ano]) {
-                    miniaturasPorAno[ano]++;
-                } else {
-                    miniaturasPorAno[ano] = 1;
+            var ctxBarra = document.getElementById('chartBarra').getContext('2d');
+            var chartBarra = new Chart(ctxBarra, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(lancamentos),
+                    datasets: [{
+                        label: 'Quantidade de Miniaturas',
+                        data: Object.values(lancamentos),
+                        backgroundColor: 'Blue' // Altere esta cor conforme necessário
+                    }]
+                },
+                options: {
+                    responsive: true
                 }
             });
-            return miniaturasPorAno;
-        }
-
-        // Função auxiliar para gerar cores aleatórias
-        function getRandomColors(numColors) {
-            const colors = [];
-            for (let i = 0; i < numColors; i++) {
-                const color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-                colors.push(color);
-            }
-            return colors;
-        }
+        });
     </script>
 </body>
 </html>

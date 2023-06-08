@@ -37,13 +37,30 @@
 
         .tabela-dados thead th {
             background-color: #d1ecf1;
+            cursor: pointer;
         }
+
+        .custom-search {
+            margin-bottom: 10px;
+        }
+
+        .custom-filter {
+            font-size: 12px;
+            width: 75%;
+        }
+        
     </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
 </head>
 <body>
     <h1>Lista de Miniaturas</h1>
 
     <a href="dashboard.html">Dashboard</a>
+
+    <div class="custom-search">
+        <!-- Barra de busca geral -->
+        <input type="text" id="searchInput" placeholder="Buscar">
+    </div>
 
     <!-- Tabela para exibir os dados -->
     <table id="tabela-dados" class="tabela-dados">
@@ -79,8 +96,11 @@
         <img id="popupImage" class="popup-image">
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
     <script>
         // Carregar os dados do arquivo JSON
         fetch('base_dados.json')
@@ -88,7 +108,6 @@
             .then(data => {
                 exibirDados(data);
                 adicionarEventos();
-                iniciarDataTable();
             })
             .catch(error => console.error(error));
 
@@ -131,26 +150,49 @@
 
         // Função para adicionar eventos aos elementos da tabela
         function adicionarEventos() {
-            const searchInput = document.getElementById('searchInput');
-            const tabela = document.getElementById('tabela-dados');
-            const tbody = tabela.querySelector('tbody');
-            const linhas = Array.from(tbody.getElementsByTagName('tr'));
+          const searchInput = document.getElementById('searchInput');
+          const tabela = $('#tabela-dados').DataTable({
+            language: {
+              url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json'
+            },
+            dom: 'Bfrtip',
+            buttons: [
+              'colvis'
+            ],
+            initComplete: function () {
+              this.api().columns().every(function () {
+                var column = this;
+                var header = $(column.header());
 
-            // Evento de busca
-            searchInput.addEventListener('input', () => {
-                const termoBusca = searchInput.value.toLowerCase();
+                // Verificar se a coluna é "Hiperlink Imagem"
+                if (column.header().textContent === 'Hiperlink Imagem') {
+                  return; // Ignorar a coluna "Hiperlink Imagem"
+                }
 
-                linhas.forEach(linha => {
-                    const valoresCelulas = Array.from(linha.getElementsByTagName('td')).map(celula => celula.textContent.toLowerCase());
-
-                    if (valoresCelulas.some(valor => valor.includes(termoBusca))) {
-                        linha.style.display = '';
-                    } else {
-                        linha.style.display = 'none';
+                var input = $('<input type="text" class="form-control form-control-sm custom-filter" placeholder="Filtrar">')
+                  .appendTo(header)
+                  .on('keyup change clear', function () {
+                    if (column.search() !== this.value) {
+                      column.search(this.value).draw();
                     }
-                });
-            });
-        }
+                  });
+
+                // Ajustar o tamanho do filtro da coluna "Tampo"
+                if (column.header().textContent === 'Tampo') {
+                  input.addClass('custom-filter-input');
+                }
+              });
+            }
+          });
+
+          // Evento de busca
+          searchInput.addEventListener('input', () => {
+            const termoBusca = searchInput.value.toLowerCase();
+            tabela.search(termoBusca).draw();
+          });
+}
+
+
 
         // Função para exibir a imagem em popup
         function exibirImagemPopup(imagemUrl) {
@@ -167,15 +209,6 @@
                 popupContainer.style.display = 'none';
             }
         });
-
-        // Iniciar o DataTable
-        function iniciarDataTable() {
-            $('#tabela-dados').DataTable({
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/Portuguese-Brasil.json'
-                }
-            });
-        }
     </script>
 </body>
 </html>
